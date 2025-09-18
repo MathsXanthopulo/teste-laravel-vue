@@ -1,3 +1,741 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Tema Espacial - Agência Espacial */
+@layer base {
+  :root {
+    /* Cores Primárias Espaciais */
+    --space-primary: 220 100% 50%;      /* Azul espacial */
+    --space-secondary: 280 100% 70%;    /* Roxo espacial */
+    --space-accent: 180 100% 50%;       /* Ciano espacial */
+    --space-success: 120 100% 50%;      /* Verde espacial */
+    --space-warning: 45 100% 60%;       /* Amarelo espacial */
+    --space-danger: 0 100% 60%;         /* Vermelho espacial */
+    
+    /* Cores de Fundo */
+    --space-bg-primary: 220 25% 8%;     /* Azul muito escuro */
+    --space-bg-secondary: 220 20% 12%;  /* Azul escuro */
+    --space-bg-tertiary: 220 15% 16%;   /* Azul médio escuro */
+    
+    /* Cores de Texto */
+    --space-text-primary: 0 0% 95%;     /* Branco quase puro */
+    --space-text-secondary: 0 0% 70%;   /* Cinza claro */
+    --space-text-muted: 0 0% 50%;       /* Cinza médio */
+    
+    /* Bordas e Efeitos */
+    --space-border: 220 30% 20%;        /* Azul escuro para bordas */
+    --space-glow: 220 100% 50%;         /* Azul para efeitos de brilho */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-gray-700;
+  }
+  
+  body {
+    background: linear-gradient(135deg, 
+      hsl(var(--space-bg-primary)) 0%, 
+      hsl(var(--space-bg-secondary)) 50%, 
+      hsl(var(--space-bg-primary)) 100%);
+    @apply text-white;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  
+  html {
+    background: hsl(var(--space-bg-primary));
+  }
+  
+  /* Efeito de estrelas no fundo */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
+      radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.2), transparent),
+      radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.4), transparent),
+      radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.3), transparent),
+      radial-gradient(2px 2px at 160px 30px, rgba(255,255,255,0.2), transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+    pointer-events: none;
+    z-index: -1;
+    animation: twinkle 20s linear infinite;
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+/* Componentes Espaciais */
+@layer components {
+  .space-card {
+    @apply bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-xl p-6 shadow-2xl backdrop-blur-sm;
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(31, 41, 55, 0.9) 100%);
+    border: 1px solid rgba(75, 85, 99, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .space-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
+  }
+
+  .space-card--interactive {
+    @apply cursor-pointer hover:scale-105 hover:shadow-2xl;
+  }
+
+  .space-card--interactive:hover {
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(59, 130, 246, 0.1);
+  }
+
+  .space-card--primary {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+
+  .space-card--success {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.1) 100%);
+    border-color: rgba(34, 197, 94, 0.3);
+  }
+
+  .space-card--warning {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+
+  .space-card--danger {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+
+  .space-card--info {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+    border-color: rgba(139, 92, 246, 0.3);
+  }
+
+  .space-button {
+    @apply bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+
+  .space-input {
+    @apply bg-gray-800 border border-gray-700 text-white placeholder-gray-400 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+    background: rgba(31, 41, 55, 0.8);
+  }
+
+  .space-sidebar {
+    background: linear-gradient(180deg, 
+      rgba(17, 24, 39, 0.95) 0%, 
+      rgba(31, 41, 55, 0.95) 100%);
+    border-right: 1px solid rgba(59, 130, 246, 0.2);
+    backdrop-filter: blur(10px);
+  }
+
+  .space-header {
+    background: rgba(17, 24, 39, 0.8);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+    backdrop-filter: blur(10px);
+  }
+}
+
+/* PrimeVue Custom Styles - Tema Espacial */
+.p-datatable {
+  @apply border border-gray-700 rounded-lg overflow-hidden;
+  background: rgba(31, 41, 55, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.p-datatable .p-datatable-header {
+  @apply bg-gray-800 border-b border-gray-700 px-6 py-4;
+  background: rgba(31, 41, 55, 0.9);
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  @apply bg-gray-800 text-gray-300 font-medium text-sm px-6 py-3 border-b border-gray-700;
+  background: rgba(31, 41, 55, 0.9);
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  @apply px-6 py-4 border-b border-gray-700 text-gray-300;
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+  @apply bg-gray-700;
+  background: rgba(55, 65, 81, 0.5);
+}
+
+.p-button {
+  @apply bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-2 px-4 rounded-md transition-all duration-200;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.p-button.p-button-text {
+  @apply bg-transparent hover:bg-gray-700 text-gray-300 border-gray-600;
+}
+
+.p-button.p-button-danger {
+  @apply bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800;
+}
+
+.p-button.p-button-sm {
+  @apply py-1 px-2 text-sm;
+}
+
+.p-inputtext {
+  @apply border border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  background: rgba(31, 41, 55, 0.8);
+  color: white;
+}
+
+.p-inputtext::placeholder {
+  @apply text-gray-400;
+}
+
+.p-card {
+  @apply rounded-lg shadow-2xl;
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(31, 41, 55, 0.9) 100%);
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.p-card .p-card-body {
+  @apply p-6;
+}
+
+.p-card .p-card-title {
+  @apply text-lg font-semibold text-white mb-2;
+}
+
+.p-card .p-card-content {
+  @apply text-gray-300;
+}
+
+/* SpaceCard Component Styles */
+.space-card {
+  @apply bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 shadow-2xl backdrop-blur-sm;
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(31, 41, 55, 0.9) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 
+    0 0 20px rgba(59, 130, 246, 0.2),
+    inset 0 0 20px rgba(59, 130, 246, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Borda Neon Animada - Efeito Running */
+.space-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, 
+    transparent, 
+    rgba(59, 130, 246, 0.8), 
+    transparent, 
+    rgba(59, 130, 246, 0.6), 
+    transparent, 
+    rgba(59, 130, 246, 0.8), 
+    transparent
+  );
+  background-size: 200% 200%;
+  border-radius: 14px;
+  z-index: -1;
+  animation: neon-border-run 3s linear infinite;
+}
+
+.space-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(31, 41, 55, 0.9) 100%);
+  border-radius: 12px;
+  z-index: -1;
+}
+
+.space-card--interactive {
+  @apply cursor-pointer hover:scale-105 hover:shadow-2xl;
+}
+
+.space-card--interactive:hover {
+  border-color: rgba(59, 130, 246, 0.8);
+  box-shadow: 
+    0 0 30px rgba(59, 130, 246, 0.6),
+    0 0 60px rgba(59, 130, 246, 0.3),
+    inset 0 0 30px rgba(59, 130, 246, 0.2),
+    0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Variantes padronizadas com neon azul */
+.space-card--primary {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 
+    0 0 20px rgba(59, 130, 246, 0.3),
+    inset 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+.space-card--primary:hover {
+  border-color: rgba(59, 130, 246, 0.8);
+  box-shadow: 
+    0 0 30px rgba(59, 130, 246, 0.6),
+    0 0 60px rgba(59, 130, 246, 0.3),
+    inset 0 0 30px rgba(59, 130, 246, 0.2);
+}
+
+.space-card--success {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 
+    0 0 20px rgba(59, 130, 246, 0.3),
+    inset 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+.space-card--success:hover {
+  border-color: rgba(59, 130, 246, 0.8);
+  box-shadow: 
+    0 0 30px rgba(59, 130, 246, 0.6),
+    0 0 60px rgba(59, 130, 246, 0.3),
+    inset 0 0 30px rgba(59, 130, 246, 0.2);
+}
+
+.space-card--warning {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 
+    0 0 20px rgba(59, 130, 246, 0.3),
+    inset 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+.space-card--warning:hover {
+  border-color: rgba(59, 130, 246, 0.8);
+  box-shadow: 
+    0 0 30px rgba(59, 130, 246, 0.6),
+    0 0 60px rgba(59, 130, 246, 0.3),
+    inset 0 0 30px rgba(59, 130, 246, 0.2);
+}
+
+.space-card--danger {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 
+    0 0 20px rgba(59, 130, 246, 0.3),
+    inset 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+.space-card--danger:hover {
+  border-color: rgba(59, 130, 246, 0.8);
+  box-shadow: 
+    0 0 30px rgba(59, 130, 246, 0.6),
+    0 0 60px rgba(59, 130, 246, 0.3),
+    inset 0 0 30px rgba(59, 130, 246, 0.2);
+}
+
+.space-card--info {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 
+    0 0 20px rgba(59, 130, 246, 0.3),
+    inset 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+.space-card--info:hover {
+  border-color: rgba(59, 130, 246, 0.8);
+  box-shadow: 
+    0 0 30px rgba(59, 130, 246, 0.6),
+    0 0 60px rgba(59, 130, 246, 0.3),
+    inset 0 0 30px rgba(59, 130, 246, 0.2);
+}
+
+.space-card__header {
+  @apply flex items-center justify-between mb-6;
+}
+
+.space-card__title-section {
+  @apply flex-1;
+}
+
+.space-card__title {
+  @apply text-xl font-bold text-white mb-1;
+  background: linear-gradient(135deg, #ffffff 0%, #e5e7eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.space-card__subtitle {
+  @apply text-sm text-gray-400;
+}
+
+.space-card__icon {
+  @apply w-12 h-12 rounded-lg flex items-center justify-center text-2xl;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.2) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.space-card__content {
+  @apply text-gray-300;
+}
+
+.space-card__footer {
+  @apply mt-6 pt-4 border-t border-gray-700;
+}
+
+/* Animação da Borda Neon Running */
+@keyframes neon-border-run {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200% 200%;
+  }
+}
+
+/* SpaceDataTable Component Styles */
+.space-datatable-container {
+  @apply w-full;
+}
+
+.space-datatable-header {
+  @apply mb-6;
+}
+
+.space-datatable {
+  @apply w-full;
+  background: transparent;
+  border: none;
+}
+
+.space-datatable .p-datatable-header {
+  @apply bg-transparent border-none p-0;
+}
+
+.space-datatable .p-datatable-thead > tr > th {
+  @apply bg-transparent text-white font-semibold;
+  background: transparent;
+  border: none;
+  padding: 1rem;
+}
+
+.space-datatable .p-datatable-tbody > tr {
+  @apply border-gray-700;
+  border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+  transition: all 0.2s ease;
+}
+
+.space-datatable .p-datatable-tbody > tr:hover {
+  @apply bg-gray-800;
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.5) 0%, rgba(17, 24, 39, 0.5) 100%);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.space-datatable .p-datatable-tbody > tr > td {
+  @apply border-gray-700 text-gray-300;
+  padding: 1rem;
+  background: transparent;
+}
+
+.space-datatable .p-datatable-tbody > tr:nth-child(even) {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.3) 0%, rgba(31, 41, 55, 0.3) 100%);
+}
+
+.space-datatable .p-datatable-tbody > tr:nth-child(even):hover {
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.7) 0%, rgba(17, 24, 39, 0.7) 100%);
+}
+
+.space-datatable .p-paginator {
+  @apply bg-transparent text-white;
+  background: transparent;
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  padding: 1rem;
+}
+
+.space-datatable .p-paginator .p-paginator-page,
+.space-datatable .p-paginator .p-paginator-first,
+.space-datatable .p-paginator .p-paginator-prev,
+.space-datatable .p-paginator .p-paginator-next,
+.space-datatable .p-paginator .p-paginator-last {
+  @apply text-gray-300 border-gray-600;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.space-datatable .p-paginator .p-paginator-page:hover,
+.space-datatable .p-paginator .p-paginator-first:hover,
+.space-datatable .p-paginator .p-paginator-prev:hover,
+.space-datatable .p-paginator .p-paginator-next:hover,
+.space-datatable .p-paginator .p-paginator-last:hover {
+  @apply bg-blue-600 text-white border-blue-500;
+}
+
+.space-datatable .p-paginator .p-paginator-page.p-highlight {
+  @apply bg-blue-600 text-white border-blue-500;
+}
+
+.space-datatable .p-dropdown {
+  @apply bg-gray-800 border-gray-600 text-white;
+}
+
+.space-datatable .p-dropdown .p-dropdown-label {
+  @apply text-gray-300;
+}
+
+.space-datatable .p-dropdown .p-dropdown-trigger {
+  @apply text-gray-400;
+}
+
+.space-datatable .p-dropdown-panel {
+  @apply bg-gray-800 border-gray-600;
+}
+
+.space-datatable .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  @apply text-gray-300;
+}
+
+.space-datatable .p-dropdown-panel .p-dropdown-items .p-dropdown-item:hover {
+  @apply bg-gray-700;
+}
+
+.space-datatable .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
+  @apply bg-blue-600 text-white;
+}
+
+.space-datatable .p-datatable-loading-overlay {
+  @apply bg-gray-900 bg-opacity-80;
+}
+
+.space-datatable .p-datatable-loading-icon {
+  @apply text-blue-500;
+}
+
+/* Override any PrimeVue default pagination borders */
+.space-datatable .p-paginator,
+.space-datatable .p-paginator * {
+  border: none !important;
+  border-color: transparent !important;
+  border-width: 0 !important;
+  border-style: none !important;
+}
+
+.space-datatable .p-paginator .p-paginator-current {
+  @apply text-white bg-transparent;
+  border: none !important;
+}
+
+/* Force remove all borders from pagination elements */
+.space-datatable .p-paginator .p-paginator-page,
+.space-datatable .p-paginator .p-paginator-first,
+.space-datatable .p-paginator .p-paginator-prev,
+.space-datatable .p-paginator .p-paginator-next,
+.space-datatable .p-paginator .p-paginator-last {
+  border: none !important;
+  border-color: transparent !important;
+}
+
+/* Remove border from pagination container itself */
+.space-datatable .p-paginator {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Global PrimeVue pagination border override */
+.p-paginator {
+  border: none !important;
+  border-color: transparent !important;
+}
+
+.p-paginator * {
+  border: none !important;
+  border-color: transparent !important;
+}
+
+/* Specific DataTable pagination override */
+.space-card .p-datatable .p-paginator {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* Override any PrimeVue DataTable default styling */
+.p-datatable .p-paginator {
+  border: none !important;
+  border-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Force remove all borders from DataTable pagination */
+.p-datatable .p-paginator,
+.p-datatable .p-paginator *,
+.space-datatable .p-datatable .p-paginator,
+.space-datatable .p-datatable .p-paginator * {
+  border: none !important;
+  border-color: transparent !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Specific class for removing pagination borders */
+.no-pagination-border .p-paginator {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.no-pagination-border .p-paginator * {
+  border: none !important;
+  border-color: transparent !important;
+}
+
+.space-tag {
+  @apply text-sm font-medium;
+  background: transparent;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.space-tag.p-tag-success {
+  @apply text-green-400;
+}
+
+.space-tag.p-tag-success:hover {
+  @apply text-green-300;
+}
+
+.space-tag.p-tag-danger {
+  @apply text-red-400;
+}
+
+.space-tag.p-tag-danger:hover {
+  @apply text-red-300;
+}
+
+.space-tag.p-tag-warning {
+  @apply text-yellow-400;
+}
+
+.space-tag.p-tag-warning:hover {
+  @apply text-yellow-300;
+}
+
+.space-tag.p-tag-info {
+  @apply text-blue-400;
+}
+
+.space-tag.p-tag-info:hover {
+  @apply text-blue-300;
+}
+
+.space-tag.p-tag-secondary {
+  @apply text-gray-400;
+}
+
+.space-tag.p-tag-secondary:hover {
+  @apply text-gray-300;
+}
+
+.space-action-button {
+  @apply transition-all duration-200;
+}
+
+.space-action-button:hover {
+  @apply scale-110;
+}
+
+.space-action-button.p-button-secondary {
+  @apply text-gray-400 hover:text-white hover:bg-gray-700;
+}
+
+.space-action-button.p-button-success {
+  @apply text-green-400 hover:text-white hover:bg-green-600;
+}
+
+.space-action-button.p-button-warning {
+  @apply text-yellow-400 hover:text-white hover:bg-yellow-600;
+}
+
+.space-action-button.p-button-danger {
+  @apply text-red-400 hover:text-white hover:bg-red-600;
+}
+
+.space-action-button.p-button-info {
+  @apply text-blue-400 hover:text-white hover:bg-blue-600;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .space-datatable-header .flex {
+    @apply flex-col space-y-4;
+  }
+  
+  .space-datatable-header .flex > div:last-child {
+    @apply w-full;
+  }
+  
+  .space-datatable-header .relative {
+    @apply w-full;
+  }
+  
+  .space-datatable-header .space-input {
+    @apply w-full;
+  }
+  
+  .space-datatable .p-datatable-thead > tr > th,
+  .space-datatable .p-datatable-tbody > tr > td {
+    @apply px-2 py-3 text-sm;
+  }
+  
+  .space-datatable .p-paginator {
+    @apply flex-col space-y-2;
+  }
+  
+  .space-datatable .p-paginator .p-paginator-pages {
+    @apply order-2;
+  }
+  
+  .space-datatable .p-paginator .p-dropdown {
+    @apply order-1;
+  }
+}
