@@ -629,6 +629,28 @@
   border-color: transparent !important;
 }
 
+/* Login Form Styles */
+.input-field {
+  @apply bg-gray-700 border border-gray-600 text-white placeholder-gray-400 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200;
+}
+
+.input-field:focus {
+  @apply bg-gray-600 border-blue-500;
+}
+
+.btn-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800;
+}
+
+.btn-primary:disabled {
+  @apply bg-gray-600 cursor-not-allowed;
+}
+
+/* Space background for login */
+.space-bg {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 25%, #1d4ed8 50%, #2563eb 75%, #3b82f6 100%);
+}
+
 .space-tag {
   @apply text-sm font-medium;
   background: transparent;
