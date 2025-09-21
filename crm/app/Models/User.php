@@ -20,6 +20,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'cnpj',
+        'company_name',
+        'phone',
+        'address',
+        'city',
+        'state',
+        'zip_code',
+        'user_type',
     ];
 
     /**
@@ -43,5 +51,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Find user by email or CNPJ for authentication
+     */
+    public function findForPassport($identifier)
+    {
+        return $this->where('email', $identifier)
+                   ->orWhere('cnpj', $identifier)
+                   ->first();
     }
 }
