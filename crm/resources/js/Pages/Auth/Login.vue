@@ -32,17 +32,23 @@ const togglePassword = () => {
 // Função para formatar CNPJ
 const formatCNPJ = (value) => {
     const numbers = value.replace(/\D/g, '');
-    return numbers.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+    if (numbers.length <= 14) {
+        return numbers.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+    }
+    return value;
 };
 
 const handleLoginInput = (event) => {
     const value = event.target.value;
-    // Se parece com CNPJ (números), formata como CNPJ
-    if (/^\d/.test(value.replace(/\D/g, ''))) {
+    const numbers = value.replace(/\D/g, '');
+    
+    // Se tem apenas números e parece com CNPJ, formata como CNPJ
+    if (numbers.length > 0 && /^\d+$/.test(numbers)) {
         const formatted = formatCNPJ(value);
         form.login = formatted;
         event.target.value = formatted;
     } else {
+        // Para email ou outros formatos, mantém como está
         form.login = value;
     }
 };
@@ -78,6 +84,7 @@ const handleLoginInput = (event) => {
                                     id="login"
                                     type="text"
                                     v-model="form.login"
+                                    @input="handleLoginInput"
                                     class="input-field w-full"
                                     placeholder="Digite seu e-mail ou CNPJ"
                                     required
