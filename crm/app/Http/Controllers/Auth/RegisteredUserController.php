@@ -31,28 +31,20 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'cnpj' => 'required|string|max:18|unique:users,cnpj',
-            'company_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:15',
-            'address' => 'required|string|max:255',
-            'city' => 'required|string|max:100',
-            'state' => 'required|string|max:2',
-            'zip_code' => 'required|string|max:9',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name' => 'Empresa', // Nome padrão
+            'email' => null, // Email não obrigatório
             'cnpj' => $request->cnpj,
-            'company_name' => $request->company_name,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'city' => $request->city,
-            'state' => $request->state,
-            'zip_code' => $request->zip_code,
+            'company_name' => 'Empresa', // Nome padrão
+            'phone' => null, // Telefone não obrigatório
+            'address' => null, // Endereço não obrigatório
+            'city' => null, // Cidade não obrigatória
+            'state' => null, // Estado não obrigatório
+            'zip_code' => null, // CEP não obrigatório
             'user_type' => 'company',
             'password' => Hash::make($request->password),
         ]);
