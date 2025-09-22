@@ -14,7 +14,8 @@
           <p v-if="subtitle" class="space-card__subtitle">{{ subtitle }}</p>
         </div>
         <div v-if="icon" class="space-card__icon">
-          {{ icon }}
+          <component v-if="typeof icon === 'function' || (typeof icon === 'object' && icon.render)" :is="icon" />
+          <span v-else>{{ icon }}</span>
         </div>
       </slot>
     </div>
@@ -42,7 +43,7 @@ defineProps({
     default: ''
   },
   icon: {
-    type: String,
+    type: [String, Object, Function],
     default: ''
   },
   variant: {
