@@ -46,6 +46,7 @@
         :loading="loading"
         :sortField="sortField"
         :sortOrder="sortOrder"
+        :showGridlines="false"
         responsiveLayout="scroll"
         class="space-datatable no-pagination-border"
         :class="{ 'space-datatable--loading': loading }"
@@ -123,10 +124,10 @@
           header="Ações" 
           :exportable="false"
           style="min-width: 8rem"
-          class="text-center"
+          class="text-left"
         >
           <template #body="slotProps">
-            <div class="flex items-center justify-center space-x-2">
+            <div class="flex items-center justify-start space-x-2">
               <Button 
                 v-for="action in globalActions"
                 :key="action.key"

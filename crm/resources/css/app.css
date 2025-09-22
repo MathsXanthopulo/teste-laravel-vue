@@ -425,7 +425,17 @@
 .space-datatable {
   @apply w-full;
   background: transparent;
-  border: none;
+  border: none !important;
+}
+
+.space-datatable .p-datatable-table {
+  border: none !important;
+}
+
+.space-datatable .p-datatable-table > thead > tr > th,
+.space-datatable .p-datatable-table > tbody > tr > td {
+  border: none !important;
+  border-bottom: 1px solid rgba(75, 85, 99, 0.3) !important;
 }
 
 .space-datatable .p-datatable-header {
@@ -465,66 +475,11 @@
   background: linear-gradient(135deg, rgba(31, 41, 55, 0.7) 0%, rgba(17, 24, 39, 0.7) 100%);
 }
 
-.space-datatable .p-paginator {
-  @apply bg-transparent text-white;
-  background: transparent;
-  border: none !important;
-  border-top: none !important;
-  border-bottom: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  padding: 1rem;
-}
 
-.space-datatable .p-paginator .p-paginator-page,
-.space-datatable .p-paginator .p-paginator-first,
-.space-datatable .p-paginator .p-paginator-prev,
-.space-datatable .p-paginator .p-paginator-next,
-.space-datatable .p-paginator .p-paginator-last {
-  @apply text-gray-300 border-gray-600;
-  background: transparent;
-  transition: all 0.2s ease;
-}
 
-.space-datatable .p-paginator .p-paginator-page:hover,
-.space-datatable .p-paginator .p-paginator-first:hover,
-.space-datatable .p-paginator .p-paginator-prev:hover,
-.space-datatable .p-paginator .p-paginator-next:hover,
-.space-datatable .p-paginator .p-paginator-last:hover {
-  @apply bg-blue-600 text-white border-blue-500;
-}
 
-.space-datatable .p-paginator .p-paginator-page.p-highlight {
-  @apply bg-blue-600 text-white border-blue-500;
-}
 
-.space-datatable .p-dropdown {
-  @apply bg-gray-800 border-gray-600 text-white;
-}
 
-.space-datatable .p-dropdown .p-dropdown-label {
-  @apply text-gray-300;
-}
-
-.space-datatable .p-dropdown .p-dropdown-trigger {
-  @apply text-gray-400;
-}
-
-.space-datatable .p-dropdown-panel {
-  @apply bg-gray-800 border-gray-600;
-}
-
-.space-datatable .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
-  @apply text-gray-300;
-}
-
-.space-datatable .p-dropdown-panel .p-dropdown-items .p-dropdown-item:hover {
-  @apply bg-gray-700;
-}
-
-.space-datatable .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
-  @apply bg-blue-600 text-white;
-}
 
 .space-datatable .p-datatable-loading-overlay {
   @apply bg-gray-900 bg-opacity-80;

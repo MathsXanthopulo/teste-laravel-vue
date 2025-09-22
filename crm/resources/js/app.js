@@ -14,6 +14,7 @@ import Column from 'primevue/column';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
 import InputText from 'primevue/inputtext';
+import Tag from 'primevue/tag';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -38,6 +39,7 @@ createInertiaApp({
             .component('Button', Button)
             .component('Card', Card)
             .component('InputText', InputText)
+            .component('Tag', Tag)
             .component('Toaster', Toaster)
             .mount(el);
     },
