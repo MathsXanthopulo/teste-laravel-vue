@@ -17,20 +17,20 @@
               placeholder="Pesquisar..." 
               class="w-64 pl-10 space-input"
             />
-            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" 
-                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
+            <Search :size="16" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </div>
           
           <!-- Botão de Ação Principal -->
           <Button 
             v-if="primaryAction"
             :label="primaryAction.label"
-            :icon="primaryAction.icon"
             @click="primaryAction.handler"
             class="space-button"
-          />
+          >
+            <template #icon>
+              <Plus :size="16" />
+            </template>
+          </Button>
         </div>
       </div>
     </div>
@@ -100,15 +100,19 @@
               <Button 
                 v-for="action in column.actions"
                 :key="action.key"
-                :icon="action.icon"
-                :label="action.label"
                 :severity="action.severity || 'secondary'"
                 size="small"
                 text
                 rounded
                 @click="action.handler(slotProps.data)"
                 class="space-action-button"
-              />
+                :title="action.label"
+              >
+                <template #icon>
+                  <Edit v-if="action.key === 'edit'" :size="14" />
+                  <Trash2 v-else-if="action.key === 'delete'" :size="14" />
+                </template>
+              </Button>
             </div>
           </template>
         </Column>
@@ -126,15 +130,19 @@
               <Button 
                 v-for="action in globalActions"
                 :key="action.key"
-                :icon="action.icon"
-                :label="action.label"
                 :severity="action.severity || 'secondary'"
                 size="small"
                 text
                 rounded
                 @click="action.handler(slotProps.data)"
                 class="space-action-button"
-              />
+                :title="action.label"
+              >
+                <template #icon>
+                  <Edit v-if="action.key === 'edit'" :size="14" />
+                  <Trash2 v-else-if="action.key === 'delete'" :size="14" />
+                </template>
+              </Button>
             </div>
           </template>
         </Column>
@@ -150,6 +158,7 @@ import Column from 'primevue/column'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Tag from 'primevue/tag'
+import { Edit, Trash2, Plus, Search } from 'lucide-vue-next'
 
 const props = defineProps({
   // Dados da tabela
