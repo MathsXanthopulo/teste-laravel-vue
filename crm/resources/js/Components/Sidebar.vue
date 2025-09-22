@@ -61,7 +61,7 @@ const userInitials = computed(() => {
               'flex items-center rounded-xl transition-all duration-200 ease-in-out transform',
               isExpanded ? 'space-x-3 px-4 py-3' : 'justify-center p-3',
               $page.url === '/dashboard' || $page.url === '/' 
-                ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-600/25' 
+                ? 'text-white border-l-4 border-purple-500 bg-gray-800/50' 
                 : 'text-gray-300 hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-purple-700/20 hover:text-white hover:shadow-md hover:scale-105'
             ]"
           >
@@ -77,7 +77,7 @@ const userInitials = computed(() => {
               'flex items-center rounded-xl transition-all duration-200 ease-in-out transform',
               isExpanded ? 'space-x-3 px-4 py-3' : 'justify-center p-3',
               $page.url.startsWith('/colaboradores') 
-                ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-600/25' 
+                ? 'text-white border-l-4 border-purple-500 bg-gray-800/50' 
                 : 'text-gray-300 hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-purple-700/20 hover:text-white hover:shadow-md hover:scale-105'
             ]"
           >
