@@ -29,6 +29,11 @@ const userInitials = computed(() => {
   const name = userName.value
   return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
 })
+
+const companyInitials = computed(() => {
+  const companyName = props.user?.company_name || 'Sistema CRM'
+  return companyName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+})
 </script>
 
 <template>
@@ -39,10 +44,10 @@ const userInitials = computed(() => {
     @mouseleave="collapseSidebar"
   >
     <!-- Logo/Header -->
-    <div class="p-6 border-b border-gray-700">
+    <div class="border-b border-gray-700" :class="isExpanded ? 'p-6' : 'p-3'">
       <div class="flex items-center" :class="isExpanded ? 'space-x-3' : 'justify-center'">
         <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl flex items-center justify-center shadow-lg">
-          <span class="text-white font-bold text-lg">CRM</span>
+          <span class="text-white font-bold text-lg">{{ companyInitials }}</span>
         </div>
         <div v-show="isExpanded" class="transition-opacity duration-300">
           <h1 class="text-white font-semibold text-lg">{{ user.company_name || 'Sistema CRM' }}</h1>
@@ -52,14 +57,14 @@ const userInitials = computed(() => {
     </div>
 
     <!-- Navigation Menu -->
-    <nav class="flex-1 px-4 py-6">
+    <nav class="flex-1 py-6" :class="isExpanded ? 'px-4' : 'px-2'">
       <ul class="space-y-2">
         <li>
           <Link 
             :href="route('dashboard.index')" 
             :class="[
               'flex items-center rounded-xl transition-all duration-200 ease-in-out transform',
-              isExpanded ? 'space-x-3 px-4 py-3' : 'justify-center p-3',
+              isExpanded ? 'space-x-3 px-4 py-3' : 'justify-center p-2',
               $page.url === '/dashboard' || $page.url === '/' 
                 ? 'text-white border-l-4 border-purple-500 bg-gray-800/50' 
                 : 'text-gray-300 hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-purple-700/20 hover:text-white hover:shadow-md hover:scale-105'
@@ -75,7 +80,7 @@ const userInitials = computed(() => {
             :href="route('colaboradores.index')" 
             :class="[
               'flex items-center rounded-xl transition-all duration-200 ease-in-out transform',
-              isExpanded ? 'space-x-3 px-4 py-3' : 'justify-center p-3',
+              isExpanded ? 'space-x-3 px-4 py-3' : 'justify-center p-2',
               $page.url.startsWith('/colaboradores') 
                 ? 'text-white border-l-4 border-purple-500 bg-gray-800/50' 
                 : 'text-gray-300 hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-purple-700/20 hover:text-white hover:shadow-md hover:scale-105'
@@ -90,7 +95,7 @@ const userInitials = computed(() => {
     </nav>
 
     <!-- User Profile Section -->
-    <div class="p-4 border-t border-gray-700">
+    <div class="border-t border-gray-700" :class="isExpanded ? 'p-4' : 'p-2'">
       <div class="flex items-center" :class="isExpanded ? 'space-x-3' : 'justify-center'">
         <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center shadow-lg">
           <span class="text-white font-medium text-sm">{{ userInitials }}</span>
