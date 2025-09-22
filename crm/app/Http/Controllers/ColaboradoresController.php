@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Colaborador;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
@@ -11,85 +14,132 @@ class ColaboradoresController extends Controller
 {
     public function index(Request $request): InertiaResponse
     {
-        // Dados mockados para a página
-        $colaboradores = [
-            [
-                'id' => 1,
-                'name' => 'João Silva',
-                'email' => 'joao.silva@empresa.com',
-                'cargo' => 'Desenvolvedor',
-                'departamento' => 'TI',
-                'status' => 'Ativo',
-                'dataAdmissao' => '2023-01-15',
-                'salario' => 'R$ 8.500,00',
-                'avatar' => 'JS'
-            ],
-            [
-                'id' => 2,
-                'name' => 'Maria Santos',
-                'email' => 'maria.santos@empresa.com',
-                'cargo' => 'Designer',
-                'departamento' => 'Marketing',
-                'status' => 'Ativo',
-                'dataAdmissao' => '2023-03-20',
-                'salario' => 'R$ 6.200,00',
-                'avatar' => 'MS'
-            ],
-            [
-                'id' => 3,
-                'name' => 'Pedro Costa',
-                'email' => 'pedro.costa@empresa.com',
-                'cargo' => 'Analista',
-                'departamento' => 'Financeiro',
-                'status' => 'Ativo',
-                'dataAdmissao' => '2023-02-10',
-                'salario' => 'R$ 7.800,00',
-                'avatar' => 'PC'
-            ],
-            [
-                'id' => 4,
-                'name' => 'Ana Oliveira',
-                'email' => 'ana.oliveira@empresa.com',
-                'cargo' => 'Gerente',
-                'departamento' => 'Vendas',
-                'status' => 'Ativo',
-                'dataAdmissao' => '2022-11-05',
-                'salario' => 'R$ 12.000,00',
-                'avatar' => 'AO'
-            ],
-            [
-                'id' => 5,
-                'name' => 'Carlos Ferreira',
-                'email' => 'carlos.ferreira@empresa.com',
-                'cargo' => 'Assistente',
-                'departamento' => 'RH',
-                'status' => 'Inativo',
-                'dataAdmissao' => '2023-05-12',
-                'salario' => 'R$ 4.500,00',
-                'avatar' => 'CF'
-            ]
-        ];
+        $companyId = Auth::id();
+        
+        $colaboradores = Colaborador::forCompany($companyId)
+            ->orderBy('name')
+            ->get()
+            ->map(function ($colaborador) {
+                return [
+                    'id' => $colaborador->id,
+                    'name' => $colaborador->name,
+                    'email' => $colaborador->email,
+                    'phone' => $colaborador->phone,
+                    'cargo' => $colaborador->cargo,
+                    'departamento' => $colaborador->departamento,
+                    'status' => ucfirst($colaborador->status),
+                    'dataAdmissao' => $colaborador->data_admissao?->format('d/m/Y'),
+                    'salario' => $colaborador->salario_formatado,
+                ];
+            });
 
         return Inertia::render('Colaboradores/Index', [
             'colaboradores' => $colaboradores
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        // TODO: validar e criar
-        return response()->json(['resource' => 'Colaboradores', 'action' => 'store'], Response::HTTP_CREATED);
+        $companyId = Auth::id();
+        
+        // Debug temporário
+        \Log::info('Criando colaborador:', [
+            'company_id' => $companyId,
+            'user_logged' => Auth::user() ? Auth::user()->toArray() : 'Não logado',
+            'request_data' => $request->all()
+        ]);
+        
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                Rule::unique('colaboradores')->where(function ($query) use ($companyId) {
+                    return $query->where('company_id', $companyId);
+                })
+            ],
+            'phone' => [
+                'nullable',
+                'string',
+                'max:15',
+                Rule::unique('colaboradores')->where(function ($query) use ($companyId) {
+                    return $query->where('company_id', $companyId);
+                })
+            ],
+            'cargo' => 'nullable|string|max:255',
+            'departamento' => 'nullable|string|max:255',
+            'salario' => 'nullable|string',
+            'data_admissao' => 'nullable|date',
+            'status' => 'nullable|in:ativo,inativo',
+        ]);
+
+        // Processar salário se fornecido
+        if (!empty($validated['salario'])) {
+            // Converter formato brasileiro (R$ 1.000,00) para decimal
+            $salario = str_replace(['R$', '.', ' ', ','], ['', '', '', '.'], $validated['salario']);
+            $validated['salario'] = is_numeric($salario) ? (float) $salario : null;
+        }
+
+        $validated['company_id'] = $companyId;
+        $validated['status'] = $validated['status'] ?? 'ativo';
+
+        Colaborador::create($validated);
+
+        return redirect()->route('colaboradores.index')->with('success', 'Colaborador criado com sucesso!');
     }
 
-    public function update(Request $request, int $id)
+    public function update(Request $request, int $id): RedirectResponse
     {
-        // TODO: validar e atualizar
-        return response()->json(['resource' => 'Colaboradores', 'action' => 'update', 'id' => $id]);
+        $companyId = Auth::id();
+        
+        $colaborador = Colaborador::forCompany($companyId)->findOrFail($id);
+        
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                Rule::unique('colaboradores')->where(function ($query) use ($companyId) {
+                    return $query->where('company_id', $companyId);
+                })->ignore($id)
+            ],
+            'phone' => [
+                'nullable',
+                'string',
+                'max:15',
+                Rule::unique('colaboradores')->where(function ($query) use ($companyId) {
+                    return $query->where('company_id', $companyId);
+                })->ignore($id)
+            ],
+            'cargo' => 'nullable|string|max:255',
+            'departamento' => 'nullable|string|max:255',
+            'salario' => 'nullable|string',
+            'data_admissao' => 'nullable|date',
+            'data_demissao' => 'nullable|date',
+            'status' => 'nullable|in:ativo,inativo',
+        ]);
+
+        // Processar salário se fornecido
+        if (!empty($validated['salario'])) {
+            // Converter formato brasileiro (R$ 1.000,00) para decimal
+            $salario = str_replace(['R$', '.', ' ', ','], ['', '', '', '.'], $validated['salario']);
+            $validated['salario'] = is_numeric($salario) ? (float) $salario : null;
+        }
+
+        $colaborador->update($validated);
+
+        return redirect()->route('colaboradores.index')->with('success', 'Colaborador atualizado com sucesso!');
     }
 
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, int $id): RedirectResponse
     {
-        // TODO: soft delete
-        return response()->json(['resource' => 'Colaboradores', 'action' => 'destroy', 'id' => $id]);
+        $companyId = Auth::id();
+        
+        $colaborador = Colaborador::forCompany($companyId)->findOrFail($id);
+        $colaborador->delete();
+
+        return redirect()->route('colaboradores.index')->with('success', 'Colaborador excluído com sucesso!');
     }
 }
