@@ -28,8 +28,9 @@ class ColaboradoresController extends Controller
                     'cargo' => $colaborador->cargo,
                     'departamento' => $colaborador->departamento,
                     'status' => ucfirst($colaborador->status),
-                    'dataAdmissao' => $colaborador->data_admissao?->format('d/m/Y'),
-                    'salario' => $colaborador->salario_formatado,
+                    'dataAdmissao' => $colaborador->data_admissao ? $colaborador->data_admissao->format('d/m/Y') : '-',
+                    'salario' => $colaborador->salario ? (float) $colaborador->salario : 0,
+                    'salarioFormatado' => $colaborador->salario_formatado,
                 ];
             });
 
@@ -77,7 +78,8 @@ class ColaboradoresController extends Controller
         // Processar salário se fornecido
         if (!empty($validated['salario'])) {
             // Converter formato brasileiro (R$ 1.000,00) para decimal
-            $salario = str_replace(['R$', '.', ' ', ','], ['', '', '', '.'], $validated['salario']);
+            $salario = str_replace(['R$', ' ', '.'], ['', '', ''], $validated['salario']);
+            $salario = str_replace(',', '.', $salario);
             $validated['salario'] = is_numeric($salario) ? (float) $salario : null;
         }
 
@@ -124,7 +126,8 @@ class ColaboradoresController extends Controller
         // Processar salário se fornecido
         if (!empty($validated['salario'])) {
             // Converter formato brasileiro (R$ 1.000,00) para decimal
-            $salario = str_replace(['R$', '.', ' ', ','], ['', '', '', '.'], $validated['salario']);
+            $salario = str_replace(['R$', ' ', '.'], ['', '', ''], $validated['salario']);
+            $salario = str_replace(',', '.', $salario);
             $validated['salario'] = is_numeric($salario) ? (float) $salario : null;
         }
 

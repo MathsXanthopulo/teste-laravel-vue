@@ -20,7 +20,6 @@
       :title="selectedColaborador ? 'Editar Colaborador' : 'Novo Colaborador'"
       size="lg"
       @close="closeEditModal"
-      @update:show="showEditModal = $event"
     >
       <form @submit.prevent="saveColaborador" class="space-y-4">
         <!-- Nome -->
@@ -180,7 +179,6 @@
       title="Confirmar Exclusão"
       size="md"
       @close="closeDeleteModal"
-      @update:show="showDeleteModal = $event"
     >
       <div class="space-y-4">
         <p class="text-gray-300">
@@ -260,7 +258,7 @@ const formatCurrency = (value) => {
   const numbers = value.replace(/\D/g, '');
   if (numbers.length > 0) {
     const numericValue = parseFloat(numbers) / 100;
-    return numericValue.toLocaleString('pt-BR', {
+    return 'R$ ' + numericValue.toLocaleString('pt-BR', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
@@ -278,7 +276,13 @@ const handlePhoneInput = (event) => {
 const handleCurrencyInput = (event) => {
   const value = event.target.value;
   const formatted = formatCurrency(value);
-  form.salario = formatted.replace(/\./g, '').replace(',', '.');
+  // Salvar o valor numérico no form (sem formatação)
+  const numbers = value.replace(/\D/g, '');
+  if (numbers.length > 0) {
+    form.salario = (parseFloat(numbers) / 100).toString();
+  } else {
+    form.salario = '';
+  }
   event.target.value = formatted;
 }
 
@@ -328,11 +332,7 @@ const tableColumns = [
   {
     field: 'name',
     header: 'Nome',
-    sortable: true,
-    template: {
-      name: 'NameTemplate',
-      props: ['data', 'value']
-    }
+    sortable: true
   },
   {
     field: 'cargo',
@@ -353,14 +353,12 @@ const tableColumns = [
   {
     field: 'dataAdmissao',
     header: 'Data Admissão',
-    sortable: true,
-    type: 'date'
+    sortable: true
   },
   {
-    field: 'salario',
+    field: 'salarioFormatado',
     header: 'Salário',
-    sortable: true,
-    type: 'currency'
+    sortable: true
   }
 ]
 
@@ -427,10 +425,10 @@ const closeDeleteModal = () => {
 
 const confirmDelete = () => {
   if (selectedColaborador.value) {
-    form.delete(route('colaboradores.destroy', selectedColaborador.value.id), {
+    router.delete(route('colaboradores.destroy', selectedColaborador.value.id), {
       onSuccess: () => {
         closeDeleteModal()
-        // O Laravel fará redirect automático, não precisa recarregar
+        // O Inertia fará o redirect automático
       },
       onError: (errors) => {
         console.error('Erro ao excluir:', errors)
@@ -442,10 +440,10 @@ const confirmDelete = () => {
 const saveColaborador = () => {
   if (selectedColaborador.value) {
     // Atualizar colaborador existente
-    form.put(route('colaboradores.update', selectedColaborador.value.id), {
+    router.put(route('colaboradores.update', selectedColaborador.value.id), form.data(), {
       onSuccess: () => {
         closeEditModal()
-        // O Laravel fará redirect automático, não precisa recarregar
+        // O Inertia fará o redirect automático
       },
       onError: (errors) => {
         console.error('Erro ao atualizar:', errors)
@@ -453,10 +451,10 @@ const saveColaborador = () => {
     })
   } else {
     // Criar novo colaborador
-    form.post(route('colaboradores.store'), {
+    router.post(route('colaboradores.store'), form.data(), {
       onSuccess: () => {
         closeEditModal()
-        // O Laravel fará redirect automático, não precisa recarregar
+        // O Inertia fará o redirect automático
       },
       onError: (errors) => {
         console.error('Erro ao criar:', errors)

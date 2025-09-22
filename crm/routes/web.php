@@ -25,8 +25,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/colaboradores/{id}', [App\Http\Controllers\ColaboradoresController::class, 'update'])->name('colaboradores.update');
     Route::delete('/colaboradores/{id}', [App\Http\Controllers\ColaboradoresController::class, 'destroy'])->name('colaboradores.destroy');
     
-    // Outras rotas podem ser adicionadas aqui conforme necessário
-    // Route::get('/clientes', [App\Http\Controllers\ClientesController::class, 'index'])->name('clientes.index');
-    // Route::get('/produtos', [App\Http\Controllers\ProdutosController::class, 'index'])->name('produtos.index');
-    // Route::get('/configuracoes', [App\Http\Controllers\ConfiguracoesController::class, 'index'])->name('configuracoes.index');
 });

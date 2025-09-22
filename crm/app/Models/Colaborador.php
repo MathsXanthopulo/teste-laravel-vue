@@ -79,6 +79,7 @@ class Colaborador extends Model
         // Garantir que o valor seja numérico
         $valor = is_numeric($this->salario) ? (float) $this->salario : 0;
         
+        // Formatação brasileira: R$ 1.234,56
         return 'R$ ' . number_format($valor, 2, ',', '.');
     }
 
