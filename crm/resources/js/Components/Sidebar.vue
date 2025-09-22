@@ -41,11 +41,11 @@ const userInitials = computed(() => {
     <!-- Logo/Header -->
     <div class="p-6 border-b border-gray-700">
       <div class="flex items-center" :class="isExpanded ? 'space-x-3' : 'justify-center'">
-        <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+        <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl flex items-center justify-center shadow-lg">
           <span class="text-white font-bold text-lg">CRM</span>
         </div>
         <div v-show="isExpanded" class="transition-opacity duration-300">
-          <h1 class="text-white font-semibold text-lg">Sistema CRM</h1>
+          <h1 class="text-white font-semibold text-lg">{{ user.company_name || 'Sistema CRM' }}</h1>
           <p class="text-gray-400 text-sm">Gestão Empresarial</p>
         </div>
       </div>
@@ -58,11 +58,11 @@ const userInitials = computed(() => {
           <Link 
             :href="route('dashboard.index')" 
             :class="[
-              'flex items-center rounded-lg transition-colors',
+              'flex items-center rounded-xl transition-all duration-200 ease-in-out transform',
               isExpanded ? 'space-x-3 px-4 py-3' : 'justify-center p-3',
               $page.url === '/dashboard' || $page.url === '/' 
-                ? 'bg-purple-600 text-white' 
-                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-600/25' 
+                : 'text-gray-300 hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-purple-700/20 hover:text-white hover:shadow-md hover:scale-105'
             ]"
           >
             <LayoutDashboard class="w-5 h-5 flex-shrink-0" />
@@ -74,11 +74,11 @@ const userInitials = computed(() => {
           <Link 
             :href="route('colaboradores.index')" 
             :class="[
-              'flex items-center rounded-lg transition-colors',
+              'flex items-center rounded-xl transition-all duration-200 ease-in-out transform',
               isExpanded ? 'space-x-3 px-4 py-3' : 'justify-center p-3',
               $page.url.startsWith('/colaboradores') 
-                ? 'bg-purple-600 text-white' 
-                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-600/25' 
+                : 'text-gray-300 hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-purple-700/20 hover:text-white hover:shadow-md hover:scale-105'
             ]"
           >
             <Users class="w-5 h-5 flex-shrink-0" />
@@ -92,7 +92,7 @@ const userInitials = computed(() => {
     <!-- User Profile Section -->
     <div class="p-4 border-t border-gray-700">
       <div class="flex items-center" :class="isExpanded ? 'space-x-3' : 'justify-center'">
-        <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
+        <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center shadow-lg">
           <span class="text-white font-medium text-sm">{{ userInitials }}</span>
         </div>
         <div v-show="isExpanded" class="flex-1 min-w-0 transition-opacity duration-300">
@@ -103,7 +103,7 @@ const userInitials = computed(() => {
           v-show="isExpanded"
           :href="route('logout')" 
           method="post"
-          class="text-gray-400 hover:text-white transition-colors"
+          class="text-gray-400 hover:text-white transition-all duration-200 hover:bg-gray-800 rounded-lg p-2 hover:scale-105"
           title="Sair"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
