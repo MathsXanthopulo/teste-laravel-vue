@@ -45,12 +45,12 @@ const companyInitials = computed(() => {
   >
     <!-- Logo/Header -->
     <div class="border-b border-gray-700" :class="isExpanded ? 'p-6' : 'p-3'">
-      <div class="flex items-center" :class="isExpanded ? 'space-x-3' : 'justify-center'">
-        <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl flex items-center justify-center shadow-lg">
+      <div class="flex items-center" :class="isExpanded ? 'space-x-4' : 'justify-center'">
+        <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
           <span class="text-white font-bold text-lg">{{ companyInitials }}</span>
         </div>
-        <div v-show="isExpanded" class="transition-opacity duration-300">
-          <h1 class="text-white font-semibold text-lg">{{ user.company_name || 'Sistema CRM' }}</h1>
+        <div v-show="isExpanded" class="transition-opacity duration-300 flex-1 min-w-0">
+          <h1 class="text-white font-semibold text-lg truncate">{{ user.company_name || 'Sistema CRM' }}</h1>
           <p class="text-gray-400 text-sm">Gestão Empresarial</p>
         </div>
       </div>
@@ -71,7 +71,7 @@ const companyInitials = computed(() => {
             ]"
           >
             <LayoutDashboard class="w-5 h-5 flex-shrink-0" />
-            <span v-show="isExpanded" class="font-medium transition-opacity duration-300">Dashboard</span>
+            <span v-show="isExpanded" class="font-medium transition-opacity duration-300 truncate">Dashboard</span>
           </Link>
         </li>
 
@@ -87,7 +87,7 @@ const companyInitials = computed(() => {
             ]"
           >
             <Users class="w-5 h-5 flex-shrink-0" />
-            <span v-show="isExpanded" class="font-medium transition-opacity duration-300">Colaboradores</span>
+            <span v-show="isExpanded" class="font-medium transition-opacity duration-300 truncate">Colaboradores</span>
           </Link>
         </li>
 
@@ -97,7 +97,7 @@ const companyInitials = computed(() => {
     <!-- User Profile Section -->
     <div class="border-t border-gray-700" :class="isExpanded ? 'p-4' : 'p-2'">
       <div class="flex items-center" :class="isExpanded ? 'space-x-3' : 'justify-center'">
-        <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center shadow-lg">
+        <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
           <span class="text-white font-medium text-sm">{{ userInitials }}</span>
         </div>
         <div v-show="isExpanded" class="flex-1 min-w-0 transition-opacity duration-300">
@@ -108,7 +108,7 @@ const companyInitials = computed(() => {
           v-show="isExpanded"
           :href="route('logout')" 
           method="post"
-          class="text-gray-400 hover:text-white transition-all duration-200 hover:bg-gray-800 rounded-lg p-2 hover:scale-105"
+          class="text-gray-400 hover:text-white transition-all duration-200 hover:bg-gray-800 rounded-lg p-2 hover:scale-105 flex-shrink-0"
           title="Sair"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
