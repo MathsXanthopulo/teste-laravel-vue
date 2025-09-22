@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        // Usuário de teste com CNPJ
+        // Usuário de teste para desenvolvimento
         User::create([
             'name' => 'Empresa Teste',
             'email' => null,
@@ -30,7 +30,5 @@ class DatabaseSeeder extends Seeder
             'password' => \Hash::make('password'),
             'email_verified_at' => now(),
         ]);
-
-        // Seeders removidos - usando apenas dados reais
     }
 }
