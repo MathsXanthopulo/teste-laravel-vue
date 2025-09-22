@@ -13,20 +13,20 @@ use Inertia\Response;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
     public function create(): Response
     {
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
-            'status' => session('status'),
+            'status' => session('status') ?? session('success'),
+            'flash' => [
+                'success' => session('success'),
+                'error' => session('error'),
+                'warning' => session('warning'),
+                'info' => session('info')
+            ]
         ]);
     }
 
-    /**
-     * Handle an incoming authentication request.
-     */
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
@@ -36,9 +36,6 @@ class AuthenticatedSessionController extends Controller
         return redirect()->intended(route('dashboard.index', absolute: false));
     }
 
-    /**
-     * Destroy an authenticated session.
-     */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
@@ -47,6 +44,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('status', 'Logout realizado com sucesso!');
+        return redirect()->route('login')->with('success', 'Logout realizado com sucesso!');
     }
 }

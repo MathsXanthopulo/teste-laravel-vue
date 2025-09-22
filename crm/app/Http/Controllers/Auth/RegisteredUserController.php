@@ -15,31 +15,44 @@ use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        return Inertia::render('Auth/Register', [
+            'flash' => [
+                'success' => session('success'),
+                'error' => session('error'),
+                'warning' => session('warning'),
+                'info' => session('info')
+            ]
+        ]);
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
+            'company_name' => 'required|string|max:255',
             'cnpj' => 'required|string|max:18|unique:users,cnpj',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'company_name.required' => 'O nome da empresa é obrigatório.',
+            'company_name.string' => 'O nome da empresa deve ser um texto válido.',
+            'company_name.max' => 'O nome da empresa não pode ter mais de 255 caracteres.',
+            
+            'cnpj.required' => 'O CNPJ é obrigatório.',
+            'cnpj.string' => 'O CNPJ deve ser um texto válido.',
+            'cnpj.max' => 'O CNPJ não pode ter mais de 18 caracteres.',
+            'cnpj.unique' => 'Este CNPJ já está cadastrado.',
+            
+            'password.required' => 'A senha é obrigatória.',
+            'password.confirmed' => 'A confirmação de senha não confere.',
+            'password.min' => 'A senha deve ter pelo menos 8 caracteres.',
         ]);
 
         $user = User::create([
-            'name' => 'Empresa', // Nome padrão
+            'name' => $request->company_name, // Usar o nome da empresa
             'email' => null, // Email não obrigatório
             'cnpj' => $request->cnpj,
-            'company_name' => 'Empresa', // Nome padrão
+            'company_name' => $request->company_name, // Nome da empresa fornecido
             'phone' => null, // Telefone não obrigatório
             'address' => null, // Endereço não obrigatório
             'city' => null, // Cidade não obrigatória
@@ -51,7 +64,6 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        // Não fazer login automático - redirecionar para login
-        return redirect()->route('login')->with('status', 'Conta criada com sucesso! Faça login para continuar.');
+        return redirect()->route('login')->with('success', 'Conta criada com sucesso! Faça login para continuar.');
     }
 }

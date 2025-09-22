@@ -7,17 +7,13 @@ use Inertia\Inertia;
 require __DIR__.'/auth.php';
 
 // Rota principal - Dashboard
-Route::get('/', function () {
-    return Inertia::render('Dashboard/Page');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 // Rotas protegidas por autenticação
 Route::middleware(['auth', 'verified'])->group(function () {
     
     // Dashboard
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard/Page');
-    })->name('dashboard.index');
+    Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard.index');
     
     // Colaboradores
     Route::get('/colaboradores', [App\Http\Controllers\ColaboradoresController::class, 'index'])->name('colaboradores.index');
@@ -26,3 +22,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/colaboradores/{id}', [App\Http\Controllers\ColaboradoresController::class, 'destroy'])->name('colaboradores.destroy');
     
 });
+

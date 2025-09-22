@@ -11,19 +11,11 @@ use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -32,11 +24,6 @@ class LoginRequest extends FormRequest
         ];
     }
 
-    /**
-     * Attempt to authenticate the request's credentials.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
@@ -44,23 +31,11 @@ class LoginRequest extends FormRequest
         $login = $this->input('login');
         $password = $this->input('password');
 
-        \Log::info('Tentativa de login', [
-            'login' => $login,
-            'password_length' => strlen($password)
-        ]);
-
-        // Try to find user by email or CNPJ
         $user = \App\Models\User::where('email', $login)
                                 ->orWhere('cnpj', $login)
                                 ->first();
 
-        \Log::info('Usuário encontrado', [
-            'user' => $user ? $user->name : 'Não encontrado',
-            'has_password' => $user ? !empty($user->password) : false
-        ]);
-
         if (!$user) {
-            \Log::warning('Usuário não encontrado', ['login' => $login]);
             RateLimiter::hit($this->throttleKey());
             throw ValidationException::withMessages([
                 'login' => 'Usuário não encontrado.',
@@ -68,23 +43,15 @@ class LoginRequest extends FormRequest
         }
 
         if (!\Hash::check($password, $user->password)) {
-            \Log::warning('Senha incorreta', ['user' => $user->name]);
             RateLimiter::hit($this->throttleKey());
             throw ValidationException::withMessages([
                 'login' => 'Senha incorreta.',
             ]);
         }
-
-        \Log::info('Login bem-sucedido', ['user' => $user->name]);
         Auth::login($user, $this->boolean('remember'));
         RateLimiter::clear($this->throttleKey());
     }
 
-    /**
-     * Ensure the login request is not rate limited.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function ensureIsNotRateLimited(): void
     {
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
@@ -103,9 +70,6 @@ class LoginRequest extends FormRequest
         ]);
     }
 
-    /**
-     * Get the rate limiting throttle key for the request.
-     */
     public function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->string('login')).'|'.$this->ip());

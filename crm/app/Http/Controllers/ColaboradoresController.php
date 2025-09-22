@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Colaborador;
+use App\Mail\WelcomeColaboradorMail;
+use App\Http\Requests\ColaboradorStoreRequest;
+use App\Http\Requests\ColaboradorUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
@@ -35,49 +38,22 @@ class ColaboradoresController extends Controller
             });
 
         return Inertia::render('Colaboradores/Index', [
-            'colaboradores' => $colaboradores
+            'colaboradores' => $colaboradores,
+            'flash' => [
+                'success' => session('success'),
+                'error' => session('error'),
+                'warning' => session('warning'),
+                'info' => session('info')
+            ]
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(ColaboradorStoreRequest $request): RedirectResponse
     {
         $companyId = Auth::id();
-        
-        // Debug temporário
-        \Log::info('Criando colaborador:', [
-            'company_id' => $companyId,
-            'user_logged' => Auth::user() ? Auth::user()->toArray() : 'Não logado',
-            'request_data' => $request->all()
-        ]);
-        
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => [
-                'nullable',
-                'email',
-                'max:255',
-                Rule::unique('colaboradores')->where(function ($query) use ($companyId) {
-                    return $query->where('company_id', $companyId);
-                })
-            ],
-            'phone' => [
-                'nullable',
-                'string',
-                'max:15',
-                Rule::unique('colaboradores')->where(function ($query) use ($companyId) {
-                    return $query->where('company_id', $companyId);
-                })
-            ],
-            'cargo' => 'nullable|string|max:255',
-            'departamento' => 'nullable|string|max:255',
-            'salario' => 'nullable|string',
-            'data_admissao' => 'nullable|date',
-            'status' => 'nullable|in:ativo,inativo',
-        ]);
+        $validated = $request->validated();
 
-        // Processar salário se fornecido
         if (!empty($validated['salario'])) {
-            // Converter formato brasileiro (R$ 1.000,00) para decimal
             $salario = str_replace(['R$', ' ', '.'], ['', '', ''], $validated['salario']);
             $salario = str_replace(',', '.', $salario);
             $validated['salario'] = is_numeric($salario) ? (float) $salario : null;
@@ -86,46 +62,28 @@ class ColaboradoresController extends Controller
         $validated['company_id'] = $companyId;
         $validated['status'] = $validated['status'] ?? 'ativo';
 
-        Colaborador::create($validated);
+        $colaborador = Colaborador::create($validated);
+
+        if ($colaborador->email) {
+            try {
+                Mail::to($colaborador->email)->send(new WelcomeColaboradorMail($colaborador));
+            } catch (\Exception $e) {
+                \Log::error('Erro ao enviar email de boas-vindas: ' . $e->getMessage());
+            }
+        }
 
         return redirect()->route('colaboradores.index')->with('success', 'Colaborador criado com sucesso!');
     }
 
-    public function update(Request $request, int $id): RedirectResponse
+    public function update(ColaboradorUpdateRequest $request, int $id): RedirectResponse
     {
         $companyId = Auth::id();
         
         $colaborador = Colaborador::forCompany($companyId)->findOrFail($id);
         
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => [
-                'nullable',
-                'email',
-                'max:255',
-                Rule::unique('colaboradores')->where(function ($query) use ($companyId) {
-                    return $query->where('company_id', $companyId);
-                })->ignore($id)
-            ],
-            'phone' => [
-                'nullable',
-                'string',
-                'max:15',
-                Rule::unique('colaboradores')->where(function ($query) use ($companyId) {
-                    return $query->where('company_id', $companyId);
-                })->ignore($id)
-            ],
-            'cargo' => 'nullable|string|max:255',
-            'departamento' => 'nullable|string|max:255',
-            'salario' => 'nullable|string',
-            'data_admissao' => 'nullable|date',
-            'data_demissao' => 'nullable|date',
-            'status' => 'nullable|in:ativo,inativo',
-        ]);
+        $validated = $request->validated();
 
-        // Processar salário se fornecido
         if (!empty($validated['salario'])) {
-            // Converter formato brasileiro (R$ 1.000,00) para decimal
             $salario = str_replace(['R$', ' ', '.'], ['', '', ''], $validated['salario']);
             $salario = str_replace(',', '.', $salario);
             $validated['salario'] = is_numeric($salario) ? (float) $salario : null;

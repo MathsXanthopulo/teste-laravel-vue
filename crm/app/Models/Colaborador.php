@@ -35,57 +35,37 @@ class Colaborador extends Model
         'deleted_at' => 'datetime',
     ];
 
-    /**
-     * Relacionamento com a empresa (User)
-     */
     public function company(): BelongsTo
     {
         return $this->belongsTo(User::class, 'company_id');
     }
 
-    /**
-     * Scope para filtrar por empresa
-     */
     public function scopeForCompany($query, $companyId)
     {
         return $query->where('company_id', $companyId);
     }
 
-    /**
-     * Scope para colaboradores ativos
-     */
     public function scopeActive($query)
     {
         return $query->where('status', 'ativo');
     }
 
-    /**
-     * Scope para colaboradores inativos
-     */
     public function scopeInactive($query)
     {
         return $query->where('status', 'inativo');
     }
 
-    /**
-     * Accessor para formatar salário como moeda
-     */
     public function getSalarioFormatadoAttribute(): string
     {
         if (!$this->salario || $this->salario === 0) {
             return 'R$ 0,00';
         }
 
-        // Garantir que o valor seja numérico
         $valor = is_numeric($this->salario) ? (float) $this->salario : 0;
         
-        // Formatação brasileira: R$ 1.234,56
         return 'R$ ' . number_format($valor, 2, ',', '.');
     }
 
-    /**
-     * Accessor para gerar avatar com iniciais
-     */
     public function getAvatarAttribute(): string
     {
         $names = explode(' ', $this->name);
@@ -100,9 +80,6 @@ class Colaborador extends Model
         return substr($initials, 0, 2);
     }
 
-    /**
-     * Accessor para data de admissão formatada
-     */
     public function getDataAdmissaoFormatadaAttribute(): string
     {
         return $this->data_admissao ? $this->data_admissao->format('d/m/Y') : '-';
